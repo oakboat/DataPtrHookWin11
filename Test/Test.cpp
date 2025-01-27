@@ -1,20 +1,12 @@
-﻿#include <iostream>
-#include <Windows.h>
-
-__int64(__fastcall* NtUserSetGestureConfig)(void* a1) = nullptr;
+﻿#include "driver.h"
 
 int main()
 {
-	LoadLibraryA("user32.dll");
-	LoadLibraryA("win32u.dll");
+	init();
+	auto pid = GetCurrentProcessId();
+	auto base = get_base(pid);
+	std::cout << std::hex << base << "\n";
 
-	const HMODULE win32u = GetModuleHandleA("win32u.dll");
-	if (!win32u)
-		return false;
-
-	*(void**)&NtUserSetGestureConfig = GetProcAddress(win32u, "NtUserSetGestureConfig");
-
-	std::cout << std::hex << NtUserSetGestureConfig((void*)0x233) << "\n";
 	return 0;
 }
 

@@ -121,10 +121,44 @@ BOOLEAN is_valid(ULONG64 address)
 
 __int64 __fastcall hkNtUserSetGestureConfig(void* a1)
 {
-    if ((ULONG64)a1 != 0x233)
+    PCOMMAND cmd = (PCOMMAND)a1;
+    if (!MmIsAddressValid(cmd) || cmd->magic != 0x233)
         return oNtUserSetGestureConfig(a1);
 
-    return 0x666;
+    switch (cmd->type)
+    {
+    case 1:
+        return 0x666;
+    case 2:
+    {
+        PEPROCESS process;
+        if (!NT_SUCCESS(PsLookupProcessByProcessId((HANDLE)cmd->pid, &process)))
+            return 0;
+        ObDereferenceObject(process);
+        return (__int64)PsGetProcessSectionBaseAddress(process);
+    }
+    case 3:
+    {
+        PEPROCESS process;
+        if (!NT_SUCCESS(PsLookupProcessByProcessId((HANDLE)cmd->pid, &process)))
+            return 0;
+        ObDereferenceObject(process);
+        SIZE_T read;
+        return MmCopyVirtualMemory(process, (PVOID)cmd->address, IoGetCurrentProcess(), cmd->buffer, KernelMode, cmd->size, &read);
+    }
+    case 4:
+    {
+        PEPROCESS process;
+        if (!NT_SUCCESS(PsLookupProcessByProcessId((HANDLE)cmd->pid, &process)))
+            return 0;
+        ObDereferenceObject(process);
+        SIZE_T write;
+        MmCopyVirtualMemory(IoGetCurrentProcess(), cmd->buffer, process, (PVOID)cmd->address, KernelMode, cmd->size, &write);
+    }
+    default:
+        break;
+    }
+    return 0;
 }
 
 extern "C" NTSTATUS DriverEntry()

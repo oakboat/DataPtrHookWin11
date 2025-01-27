@@ -25,7 +25,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="command.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

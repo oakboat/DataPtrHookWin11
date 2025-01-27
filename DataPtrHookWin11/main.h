@@ -2,6 +2,7 @@
 #include <windef.h>
 #include <ntddk.h>
 #include <ntimage.h>
+#include "command.h"
 
 typedef enum _SYSTEM_INFORMATION_CLASS
 {
@@ -74,8 +75,22 @@ typedef struct _RTL_PROCESS_MODULES
 
 EXTERN_C 
 {
-	NTKERNELAPI NTSTATUS NTAPI ZwQuerySystemInformation(_In_ SYSTEM_INFORMATION_CLASS SystemInformationClass, _Inout_ PVOID SystemInformation, _In_ ULONG SystemInformationLength, _Out_opt_ PULONG ReturnLength);
+	NTKERNELAPI NTSTATUS NTAPI ZwQuerySystemInformation(
+		_In_ SYSTEM_INFORMATION_CLASS SystemInformationClass,
+		_Inout_ PVOID SystemInformation,
+		_In_ ULONG SystemInformationLength,
+		_Out_opt_ PULONG ReturnLength);
 	NTKERNELAPI CHAR* PsGetProcessImageFileName(IN PEPROCESS Process);
+	NTKERNELAPI PVOID PsGetProcessSectionBaseAddress(__in PEPROCESS Process);
+	NTKERNELAPI NTSTATUS MmCopyVirtualMemory(
+		IN PEPROCESS FromProcess,
+		IN CONST VOID* FromAddress,
+		IN PEPROCESS ToProcess,
+		OUT PVOID ToAddress,
+		IN SIZE_T BufferSize,
+		IN KPROCESSOR_MODE PreviousMode,
+		OUT PSIZE_T NumberOfBytesCopied
+	);
 }
 
 __int64(__fastcall* oNtUserSetGestureConfig)(void* a1);
