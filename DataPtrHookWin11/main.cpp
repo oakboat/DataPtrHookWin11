@@ -144,7 +144,7 @@ __int64 __fastcall hkNtUserSetGestureConfig(void* a1)
             return 0;
         ObDereferenceObject(process);
         SIZE_T read;
-        return MmCopyVirtualMemory(process, (PVOID)cmd->address, IoGetCurrentProcess(), cmd->buffer, KernelMode, cmd->size, &read);
+        return MmCopyVirtualMemory(process, (PVOID)cmd->address, IoGetCurrentProcess(), cmd->buffer, cmd->size, KernelMode, &read);
     }
     case 4:
     {
@@ -153,7 +153,7 @@ __int64 __fastcall hkNtUserSetGestureConfig(void* a1)
             return 0;
         ObDereferenceObject(process);
         SIZE_T write;
-        MmCopyVirtualMemory(IoGetCurrentProcess(), cmd->buffer, process, (PVOID)cmd->address, KernelMode, cmd->size, &write);
+        MmCopyVirtualMemory(IoGetCurrentProcess(), cmd->buffer, process, (PVOID)cmd->address, cmd->size, KernelMode, &write);
     }
     default:
         break;

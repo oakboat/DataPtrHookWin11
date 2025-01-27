@@ -45,6 +45,14 @@ bool read(DWORD pid, ULONG64 address, PVOID buffer, SIZE_T size)
 	return NtUserSetGestureConfig(&cmd);
 }
 
+template<typename T>
+T read(DWORD pid, ULONG64 address)
+{
+	T result{};
+	read(pid, address, &result, sizeof(T));
+	return result;
+}
+
 bool write(DWORD pid, ULONG64 address, PVOID buffer, SIZE_T size)
 {
 	COMMAND cmd{};
@@ -55,4 +63,10 @@ bool write(DWORD pid, ULONG64 address, PVOID buffer, SIZE_T size)
 	cmd.buffer = buffer;
 	cmd.size = size;
 	return NtUserSetGestureConfig(&cmd);
+}
+
+template<typename T>
+bool write(DWORD pid, ULONG64 address, T data)
+{
+	return write(pid, address, &data, sizeof(T));
 }
