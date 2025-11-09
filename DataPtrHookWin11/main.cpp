@@ -245,7 +245,7 @@ extern "C" NTSTATUS DriverEntry()
                     break;
                 }
                 
-            pointer += 0xC30;
+            pointer += 0xC28;
             dbg("pointer %llx\n", pointer)
 
             if (is_valid(pointer))
